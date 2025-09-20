@@ -11,3 +11,22 @@ module.exports.validateSportBody = (sportSchema) => async (req, res, next) => {
         next(createError(400, error.message));
     }
 };
+
+module.exports.buildSportFilter = async (req, res, next) => {
+    try {
+        const { name, olimpic, image } = req.query;
+        req.filter = {};
+        if (name) {
+            req.filter.name = new RegExp(name);
+        }
+        if (olimpic) {
+            req.filter.isOlimpic = olimpic === 'yes';
+        }
+        if (image) {
+            req.filter.image = image === 'no' ? null : new RegExp('');
+        }
+        next();
+    } catch (error) {
+        next(error);
+    }
+};

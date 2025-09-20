@@ -1,11 +1,16 @@
 const express = require('express');
-const { createSport } = require('../controllers/sport.controller');
+const { createSport, getAllSports, getSportById, deleteSportById, patchSportById } = require('../controllers/sport.controller');
 const upload = require('../middlewares/uploadImage');
-const { validateSportBody } = require('../middlewares/sport.mw');
-const { sportSchemaCreate } = require('../validations/sport.validation');
+const { validateSportBody, buildSportFilter } = require('../middlewares/sport.mw');
+const { sportSchemaCreate, sportSchemaUpdate } = require('../validations/sport.validation');
+const { paginate } = require('../middlewares/pagination.mw');
 
 const sportRouter = express.Router();
 
-sportRouter.post('/', validateSportBody(sportSchemaCreate), upload.single('image'), createSport);
+sportRouter.post('/', upload.single('image'), createSport);
+sportRouter.get('/', paginate, buildSportFilter, getAllSports);
+sportRouter.get('/:idSport', getSportById);
+sportRouter.patch('/:idSport', upload.single('image'), patchSportById);
+sportRouter.delete('/:idSport', deleteSportById);
 
 module.exports = sportRouter;
